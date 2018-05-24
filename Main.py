@@ -3,9 +3,22 @@ import socket
 import os
 import sys
 import struct
+from Tkinter import *
+from tkMessageBox import *
 
 
 def socket_client():
+    if humiEntry.get() == "" or temEntry.get() == "":
+        showerror(u'错误！', u'输入不能为空！')
+        return
+    elif not (temEntry.get().isdigit() and humiEntry.get().isdigit):
+        showerror(u'错误！', u'输入只能是纯数字！')
+        return
+    fp = open("config.txt", 'wb')
+    fp.write(temEntry.get())
+    fp.write('\n')
+    fp.write(humiEntry.get())
+    fp.close()
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #s.connect(("127.0.0.1", 51423))
@@ -13,7 +26,7 @@ def socket_client():
     except socket.error as msg:
         print msg
         sys.exit(1)
-
+    print "here"
     print s.recv(1024)
 
     while 1:
@@ -38,6 +51,15 @@ def socket_client():
         s.close()
         break
 
-
-if __name__ == '__main__':
-    socket_client()
+root = Tk()
+frame = Frame(root)
+root.title(u'服务器阈值设置')
+frame.pack(padx = 10, pady = 10)
+Label(frame, text = u'温度阈值:').grid(row = 0, column = 0)
+Label(frame, text = u'湿度阈值:').grid(row = 1, column = 0)
+temEntry = Entry(frame)
+temEntry.grid(row = 0, column = 1)
+humiEntry = Entry(frame)
+humiEntry.grid(row = 1, column = 1)
+Button(frame, text = u'设置', command = socket_client).grid(row = 2, columnspan = 2)
+root.mainloop()
