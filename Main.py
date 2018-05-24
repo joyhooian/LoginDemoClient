@@ -50,6 +50,7 @@ def socket_client():
                 s.send(data)
         s.close()
         break
+    showinfo(u'信息', u'设置成功！')
 
 root = Tk()
 frame = Frame(root)
